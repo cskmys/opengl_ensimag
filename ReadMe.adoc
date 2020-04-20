@@ -1,9 +1,119 @@
 = Project List
 
+https://learnopengl.com/
+
+.Projects
 |===
-|Folder |Name |Comment
+|Folder |Name in website |Comment
 
 |l02_03
-|Hello window
+|Hello Window
 |Create a blank window
+
+|l02_04_01
+|Hello Triangle
+|Draw a triangle
+
+|l02_04_02
+|Hello Triangle
+|Draw a rectangle
+
+|l02_04_03
+|Hello Triangle
+|Draw a rectangle without insides filled
+
+|l02_05_01
+|Shaders
+|Setting color in frag shader from value in vertex shader
+
+|l02_05_02
+|Shaders
+|Sending color to frag shader directly from main program
+
+|l02_05_03
+|Shaders
+|Sending color to frag shader using vertex attribute
+
+|l02_05_04
+|Shaders
+|cpp class to deal with Shader
+
+|l02_06_01
+|Textures
+|Texture on triangle
 |===
+
+Every time you add new project and modify the cmake file, Go to File>Invalidate Caches/Restart.
+After restarting make sure that you have switched to new projects run configuration in the dropdown at the
+top-middle right of the IDE.
+
+== Misc
+
+Check opengl version using:
+----
+glxinfo | grep version
+----
+
+The graphics pipeline can be divided into two large parts: the first transforms your 3D coordinates into
+2D coordinates and the second part transforms the 2D coordinates into actual colored pixels.
+
+*A vertex is a collection of data per 3D coordinate.*
+
+*This vertex's data is represented using vertex attributes.*
+
+*A fragment in OpenGL is all the data required for OpenGL to render a single pixel.*
+
+*vbo to send vertex data to graphics pipeline*
+
+any opengl object will be created via an id and manipulated using the same.
+
+OpenGL only processes 3D coordinates when they're in a specific range between -1.0 and 1.0 on all 3 axes (x, y and z).
+
+vertex shader *must* have an ip. Better to specify layout number
+
+uniforms are way to pass data from CPU to GPU. They are global(n unique i,e, no 2 uniforms can have same name) in
+the shader program i,e, it can be accessed by any shader at any stage i,e, no need to go through vertex shader.
+
+Note if you are sending a data related to std attribute, better to use existing attribute route i,e, pass data to
+vertex shader and from there to frag shader. If it's just plain data, then you can use uniform rather than
+attribute to send data to desired shader
+
+Fragment interpolation is applied to all the fragment shader's input attributes.
+
+Texture coordinates start at (0,0) for the lower left corner of a texture image to (1,1) for
+the upper right corner of a texture image.
+
+== Graphics Pipeline
+As input to the graphics pipeline: list of three 3D coordinates that should form a triangle in an array here called
+Vertex Data. In order for OpenGL to know what to make of your collection of coordinates and color values OpenGL requires
+you to hint what kind of render types you want to form with the data.
+
+* vertex shader: input: a single vertex. purpose: transform 3D coordinates into different 3D coordinates and
+the vertex shader allows us to do some basic processing on the vertex attributes.
+
+* primitive assembly stage: input: all the vertices from the vertex shader that form a primitive. It assembles all
+the point(s) in the primitive shape given.
+
+* geometry shader: input: collection of vertices that form a primitive. purpose: generate other shapes by emitting
+new vertices to form new (or other) primitive(s).
+
+* rasterization: it maps the resulting primitive(s) to the corresponding pixels on the final screen,
+resulting in fragments. Before the fragment shaders run, it discards all fragments that are outside your view(clipping)
+to increase performance.
+
+* fragment shader: calculate the final color of a pixel and this is usually the stage where all the advanced
+OpenGL effects occur. Usually the fragment shader contains data about the 3D scene that it can use to calculate
+the final pixel color (like lights, shadows, color of the light and so on).
+
+* alpha test and blending stage: checks the corresponding depth (and stencil) value of the fragment and uses
+those to check if the resulting fragment is in front or behind other objects and should be discarded accordingly.
+The stage also checks for alpha values (alpha values define the opacity of an object) and blends
+the objects accordingly.
+
+For almost all the cases we only have to work with the vertex and fragment shader. The geometry shader is optional and
+usually left to its default shader.
+
+
+In modern OpenGL we are required to define at least a vertex and fragment shader of our own
+(there are no default vertex/fragment shaders on the GPU).
+

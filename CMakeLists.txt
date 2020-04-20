@@ -55,6 +55,7 @@ else()
 endif(WIN32)
 
 set(CHAPTERS
+    0.playground
     1.getting_started
     2.lighting
     3.model_loading
@@ -62,6 +63,18 @@ set(CHAPTERS
     5.advanced_lighting
     6.pbr
     7.in_practice
+)
+
+set(0.playground
+    l02_03
+    l02_04_01
+    l02_04_02
+    l02_04_03
+    l02_05_01
+    l02_05_02
+    l02_05_03
+    l02_05_04
+    l02_06_01
 )
 
 set(1.getting_started
