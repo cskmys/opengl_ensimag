@@ -93,6 +93,8 @@ set(0.playground
     l03_01_01
     l03_02_01
     l03_02_02
+    l03_02_03
+    l03_02_04
 )
 
 set(1.getting_started

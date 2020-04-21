@@ -51,7 +51,7 @@ int main(){
     glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
     glEnable(GL_DEPTH_TEST);
 
-    Shader cubeShader("cube_l03_02_02.vs", "cube_l03_02_02.fs");
+    Shader cubeShader("cube_l03_02_04.vs", "cube_l03_02_04.fs");
     cubeShader.use();
     cubeShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
     cubeShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
@@ -123,7 +123,7 @@ int main(){
     cubeShader.setMat4("model", model);
     cubeShader.setVec3("lampPos", lampPos);
 
-    Shader lampShader("lamp_l03_02_02.vs", "lamp_l03_02_02.fs");
+    Shader lampShader("lamp_l03_02_04.vs", "lamp_l03_02_04.fs");
     lampShader.use();
     unsigned int lampVAO;
     glGenVertexArrays(1, &lampVAO);
@@ -165,6 +165,7 @@ int main(){
         cubeShader.use();
         cubeShader.setMat4("projection", projection);
         cubeShader.setMat4("view", view);
+        cubeShader.setVec3("camPos", camera.Position);
         glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 

@@ -108,7 +108,19 @@ https://learnopengl.com/
 
 |l03_02_01
 |Basic Lighting
-|Ambient Light
+|Ambient Lighting
+
+|l03_02_02
+|Basic Lighting
+|Diffuse Lighting
+
+|l03_02_03
+|Basic Lighting
+|Correcting normal under non-uniform scaling
+
+|l03_02_04
+|Basic Lighting
+|Specular lighting
 |===
 
 Every time you add new project and modify the cmake file, Go to File>Invalidate Caches/Restart.

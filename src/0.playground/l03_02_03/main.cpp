@@ -51,7 +51,7 @@ int main(){
     glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
     glEnable(GL_DEPTH_TEST);
 
-    Shader cubeShader("cube_l03_02_02.vs", "cube_l03_02_02.fs");
+    Shader cubeShader("cube_l03_02_03.vs", "cube_l03_02_03.fs");
     cubeShader.use();
     cubeShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
     cubeShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
@@ -119,11 +119,12 @@ int main(){
     glm::vec3 cubePos( 0.0f,  0.0f,  0.0f);
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, cubePos);
-    glm::vec3 lampPos(1.2f, 1.0f, 2.0f);
     cubeShader.setMat4("model", model);
+
+    glm::vec3 lampPos(1.2f, 1.0f, 2.0f);
     cubeShader.setVec3("lampPos", lampPos);
 
-    Shader lampShader("lamp_l03_02_02.vs", "lamp_l03_02_02.fs");
+    Shader lampShader("lamp_l03_02_03.vs", "lamp_l03_02_03.fs");
     lampShader.use();
     unsigned int lampVAO;
     glGenVertexArrays(1, &lampVAO);
