@@ -74,7 +74,33 @@ https://learnopengl.com/
 |Coordinate Systems
 |Rotate cube with z-buffer
 
+|l02_09_01
+|Camera
+|Camera Rotation along a fixed trajectory
 
+|l02_09_02
+|Camera
+|Camera Movement linked with keyboard along a fixed orientation
+
+|l02_09_03
+|Camera
+|Camera Movement delta time
+
+|l02_09_04
+|Camera
+|Camera Movement linked with mouse allowing orientation change
+
+|l02_09_05
+|Camera
+|Remove initial jump with mouse movement
+
+|l02_09_06
+|Camera
+|Zoom!!!
+
+|l02_09_07
+|Camera
+|Camera class
 |===
 
 Every time you add new project and modify the cmake file, Go to File>Invalidate Caches/Restart.
