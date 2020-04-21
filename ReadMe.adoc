@@ -106,9 +106,9 @@ https://learnopengl.com/
 |Colors
 |Setting up scene with object and light source
 
-|l03_01_02
-|Colors
-|Light
+|l03_02_01
+|Basic Lighting
+|Ambient Light
 |===
 
 Every time you add new project and modify the cmake file, Go to File>Invalidate Caches/Restart.

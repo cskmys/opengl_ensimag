@@ -54,11 +54,11 @@ int main(){
     // now we create 2 shader programs to make sure that we properly isolate light source and scene objects
     // for ex: we dont want light source to have the same color as the scene & transformations of scene objects
     // should not impact light source position.
-    Shader lampShader("lamp_l03_01_02.vs", "lamp_l03_01_02.fs");
+    Shader lampShader("lamp_l03_02_02.vs", "lamp_l03_02_02.fs");
 
 
 
-    Shader cubeShader("cube_l03_01_02.vs", "cube_l03_01_02.fs");
+    Shader cubeShader("cube_l03_02_02.vs", "cube_l03_02_02.fs");
     cubeShader.use();
     cubeShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
     cubeShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
