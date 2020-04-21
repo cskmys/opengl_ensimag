@@ -40,12 +40,49 @@ https://learnopengl.com/
 
 |l02_06_01
 |Textures
-|Texture on triangle
+|Texture on rectangle
+
+|l02_06_02
+|Textures
+|Texture + color
+
+|l02_06_03
+|Textures
+|Texture from multiple images
+
+|l02_06_04
+|Textures
+|Code cleanup and refactoring
+
+|l02_07_01
+|Transformations
+|scale and rotate
+
+|l02_07_02
+|Transformations
+|translate and rotate over time
+
+|l02_08_01
+|Coordinate Systems
+|Perspective projection
+
+|l02_08_02
+|Coordinate Systems
+|Rotate cube
+
+|l02_08_03
+|Coordinate Systems
+|Rotate cube with z-buffer
+
+
 |===
 
 Every time you add new project and modify the cmake file, Go to File>Invalidate Caches/Restart.
 After restarting make sure that you have switched to new projects run configuration in the dropdown at the
 top-middle right of the IDE.
+
+When you create new project that uses some resource files(anything other than c/cpp files ex: shaders, pictures etc),
+dont forget to change/assign working directory in the build configurations
 
 == Misc
 
@@ -83,6 +120,18 @@ Fragment interpolation is applied to all the fragment shader's input attributes.
 Texture coordinates start at (0,0) for the lower left corner of a texture image to (1,1) for
 the upper right corner of a texture image.
 
+*Use quaternions to achieve rotation, they are much safer and computationally efficient*
+
+*The actual transformation order should be read in reverse: even though in code we first translate, then rotate and
+later scale, the actual transformations first scale, apply a rotation and then a translation.*
+For example, if you would first multiple with translation vector and then scaling vector,
+the translation vector would also scale! Hence, scaling is done 1st(in code last because order is reverse in code) and
+then translate.
+
+*OpenGL uses a right-handed co-ordinate system i,e +x-axis -> right, +y-axis -> up & the +z-axis is backwards*
+
+For z-buffer just enable it once and clear the depth buffer every iteration
+
 == Graphics Pipeline
 As input to the graphics pipeline: list of three 3D coordinates that should form a triangle in an array here called
 Vertex Data. In order for OpenGL to know what to make of your collection of coordinates and color values OpenGL requires
@@ -117,3 +166,21 @@ usually left to its default shader.
 In modern OpenGL we are required to define at least a vertex and fragment shader of our own
 (there are no default vertex/fragment shaders on the GPU).
 
+
+== Co-ordinate systems
+
+Vclip = Mprojection ⋅ Mview ⋅ Mmodel ⋅ Vlocal
+
+(Read it from right to left)
+
+* Vlocal: the object vertex
+
+* Mmodel: Position the object vertex to a place in the world
+
+* Mview: Simulates the camera movt by moving the world
+
+* MProjection: Creates a projection using a frustum which is used by vertex shader to determine which all vertices will
+remain(inside the frustum) or become clipped(outside the frustum).
+Note: perspective division and clipping is automatically done by shader.
+
+* Vclip: The final vertex point(in range (-1,1)) that will be rendered

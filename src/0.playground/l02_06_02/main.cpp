@@ -5,6 +5,8 @@
 
 #include <GLFW/glfw3.h>
 #include <cmath>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -34,7 +36,7 @@ int main(){
     // opengl render screen location(0,0) and max dimensions (800, 600) where opengl should map it's (-1,1) in x & y
     glViewport(0, 0, 800, 600);
 
-    Shader ourShader("shader_l02_05_04.vs", "shader_l02_05_04.fs");
+    Shader ourShader("shader_l02_06_02.vs", "shader_l02_06_02.fs");
 
     // to which shader program should the data from PC should be sent needs to be describe 1st
     // That's normally how opengl's state machine works, 1st you need to say which one via api and then go on to
@@ -43,12 +45,12 @@ int main(){
 
     // now position n color both in same array
     float vertices[] = {
-            // positions
-            0.5f, -0.5f, 0.0f,   // bottom right
-            -0.5f, -0.5f, 0.0f,  // bottom left
-            0.0f,  0.5f, 0.0f,   // top
+            // positions          // colors           // texture coords
+            0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+            0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+            -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+            -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left
     };
-
     // There's quite a chain to describe how a data from an array in PC's RAM goes into which vertex and
     // which attribute in memory of Graphic card. This whole chain once created, is referenced and
     // managed(enable/disable loading data to attribute) using a vertex array object
@@ -72,8 +74,50 @@ int main(){
     // Out of multiple VBOs that may exist which VBO is the data taken from, is determined by the VBO currently
     // bound to GL_ARRAY_BUFFER when calling glVertexAttribPointer. To which attribute in the vertex shader does this
     // VBO's data go to is specified in the 1st argument of glVertexAttribPointer.
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0); // after description above, now enable it
+    // sending color to layout location 1
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1); // after description above, now enable it
+    // sending texture co-ord to layout location 2
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2); // after description above, now enable it
+
+    unsigned int indices[] = {  // note that we start from 0!
+            0, 1, 3,   // first triangle
+            1, 2, 3    // second triangle
+    };
+    // indexing each point to a specific triangle is done via EBO
+    unsigned int EBO;
+    glGenBuffers(1, &EBO);
+    // Buffer that holds EBO is of type ELEMENT_ARRAY. Since it's different from ARRAY_BUFFER above,
+    // we need not worry about unbinding it. We can use all simultaneously.
+    // All apis calling ARRAY_BUFFER will manipulate vertices & those calling ELEMENT_ARRAY_BUFFER manipulate indices.
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    // set the texture wrapping/filtering options (on the currently bound texture object, remember the  state machine)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    int width, height, nrChannels;
+    unsigned char *data;
+    if( (data = stbi_load("container.jpg", &width, &height, &nrChannels, 0) ) != NULL ){
+        // GL_TEXTURE_2D will impact only 2D textures not any other 1D or 3D textures
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    // after mipmap generation, image data is not needed anymore
+    stbi_image_free(data);
+    // No need to do this, coz bindTexture will internally manage this part?
+    // ourShader.setFloat("ourTexture", texture);
+
 
     while(!glfwWindowShouldClose(window)){ // one iteration of this loop = 1 frame
         processInput(window);
@@ -86,19 +130,18 @@ int main(){
         // if we have set of shader programs, then we need to say which shader's vertex array object we are manipulating.
         // so though we have just one here, we are just establishing convention of explicitly calling it
         ourShader.use();
-        auto timeValue = (float)glfwGetTime(); // due to typecast, type can be deduced by compiler. so auto
-        auto greenValue = (float)(sin(timeValue) / 2.0f) + 0.5f;
-        // to get layout location we didnt have to do useProgram since the api explicitly asks for the shader
-        // but, to set the value, api doesn't ask which shader it is
-        // hence we do use program to set desired shader and then use the api below to send data to that
-        ourShader.setVec4("ourColor", 0.0, greenValue, 0.0, 1.0);
+        // before drawing we need to say which texture needs to be applied for a group of vertices.
+        // Group of vertices is referred to by VAO. Hence, call this before VAO(remember the state machine)
+        glBindTexture(GL_TEXTURE_2D, texture);
         // for any drawing related stuff we need to bind VAO 1st but for just sending the data to shader via uniform,
         // we need not do VAO 1st to be safe???
         // there could be large number of VAOs. Hence, before drawing using EBO(if it exists), we need to say which VAO
         // that the EBO should index. To say that 1st we need to bind and then do operations(opengl state machine)
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-
+        // we draw using EBO, hence before calling the draw api, we need to bind relevant EBO
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        // we need to draw using the elements
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         // after finishing our work with VOA we can(or is it should?) unbind it
 
         glfwSwapBuffers(window);
@@ -106,7 +149,7 @@ int main(){
     }
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
-
+    glDeleteBuffers(1, &EBO);
     glfwTerminate();
     return 0;
 }
