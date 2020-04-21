@@ -90,6 +90,8 @@ set(0.playground
     l02_09_05
     l02_09_06
     l02_09_07
+    l03_01_01
+    l03_01_02
 )
 
 set(1.getting_started

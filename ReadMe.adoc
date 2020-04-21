@@ -101,6 +101,14 @@ https://learnopengl.com/
 |l02_09_07
 |Camera
 |Camera class
+
+|l03_01_01
+|Colors
+|Setting up scene with object and light source
+
+|l03_01_02
+|Colors
+|Light
 |===
 
 Every time you add new project and modify the cmake file, Go to File>Invalidate Caches/Restart.
@@ -157,6 +165,9 @@ then translate.
 *OpenGL uses a right-handed co-ordinate system i,e +x-axis -> right, +y-axis -> up & the +z-axis is backwards*
 
 For z-buffer just enable it once and clear the depth buffer every iteration
+
+*Color of an object under light source is dot product of the color of object(actual color i,e,
+say under white light(RGB=1.0, 1.0, 1.0)) with color of light*
 
 == Graphics Pipeline
 As input to the graphics pipeline: list of three 3D coordinates that should form a triangle in an array here called
