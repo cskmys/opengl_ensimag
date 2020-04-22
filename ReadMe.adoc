@@ -121,6 +121,54 @@ https://learnopengl.com/
 |l03_02_04
 |Basic Lighting
 |Specular lighting
+
+|l03_03_01
+|Materials
+|Material properties
+
+|l03_03_02
+|Materials
+|Light properties(but light without color per se)
+
+|l03_03_03
+|Materials
+|Object under colored light
+
+|l03_04_01
+|Lighting Maps
+|Diffuse Map
+
+|l03_04_02
+|Lighting Maps
+|Specular Map
+
+|l03_05_01
+|Light casters
+|Directional light
+
+|l03_05_02
+|Light casters
+|Point light
+
+|l03_05_03
+|Light casters
+|Flashlight
+
+|l03_05_04
+|Light casters
+|Flashlight with softer cone
+
+|l03_06_01
+|Multiple Lights
+|Direction light + 4 Point lights
+
+|l03_06_02
+|Multiple Lights
+|Direction light + 4 Point lights + flash light
+
+|l04_03_01
+|Model
+|Loading cyborg
 |===
 
 Every time you add new project and modify the cmake file, Go to File>Invalidate Caches/Restart.
